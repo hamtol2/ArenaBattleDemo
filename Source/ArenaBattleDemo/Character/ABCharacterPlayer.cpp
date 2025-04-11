@@ -120,8 +120,8 @@ void AABCharacterPlayer::Move(const FInputActionValue& Value)
 	FVector RightVector = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
 	// 무브먼트 컴포넌트에 값 전달.
-	AddMovementInput(ForwardVector, Movement.Y);
-	AddMovementInput(RightVector, Movement.X);
+	AddMovementInput(ForwardVector, Movement.X);
+	AddMovementInput(RightVector, Movement.Y);
 }
 
 void AABCharacterPlayer::Look(const FInputActionValue& Value)
