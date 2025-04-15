@@ -34,7 +34,6 @@ AABCharacterPlayer::AABCharacterPlayer()
 		FRotator(0.0f, -90.0f, 0.0f)
 	);
 
-
 	// 리소스 설정.
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMesh(TEXT("/Game/Characters/Mannequins/Meshes/SKM_Quinn.SKM_Quinn"));
 	if (CharacterMesh.Object)
