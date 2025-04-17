@@ -7,12 +7,19 @@
 #include "ABComboActionData.h"
 #include "Physics/ABCollision.h"
 #include "Components/CapsuleComponent.h"
+#include "Engine/DamageEvents.h"
 
 // Sets default values
 AABCharacterBase::AABCharacterBase()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	// 컴포넌트 설정.
+	GetCapsuleComponent()->SetCollisionProfileName(CPROFILE_ABCAPSULE);
+
+	// 메시의 콜리전은 NoCollision 설정 (주로 랙돌에 사용됨).
+	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
 
 	static ConstructorHelpers::FObjectFinder<UABCharacterControlData> ShoulderDataRef(
 		TEXT("/Game/ArenaBattle/CharacterControl/ABC_Shoulder.ABC_Shoulder"));
@@ -32,6 +39,20 @@ AABCharacterBase::AABCharacterBase()
 			ECharacterControlType::Quarter,
 			QuarterDataRef.Object
 		);
+	}
+
+	// 콤보 액션 몽타주 애셋 설정.
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ComboActionMontageRef(TEXT("/Game/ArenaBattle/Animation/AM_ComboAttack.AM_ComboAttack"));
+	if (ComboActionMontageRef.Object)
+	{
+		ComboActionMontage = ComboActionMontageRef.Object;
+	}
+
+	// 콤보 액션 데이터 애셋 설정.
+	static ConstructorHelpers::FObjectFinder<UABComboActionData> ComboActionDataRef(TEXT("/Game/ArenaBattle/ComboAction/ABA_ComboAction.ABA_ComboAction"));
+	if (ComboActionDataRef.Object)
+	{
+		ComboActionData = ComboActionDataRef.Object;
 	}
 }
 
@@ -89,8 +110,60 @@ void AABCharacterBase::AttackHitCheck()
 	// 충돌 감지된 경우의 처리.
 	if (HitDetected)
 	{
+		// 대미지 양.
+		const float AttackDamage = 30.0f;
+
+		// 대미지 이벤트.
+		FDamageEvent DamageEvent;
+
 		// 대미지 전달.
+		OutHitResult.GetActor()->TakeDamage(
+			AttackDamage,
+			DamageEvent,
+			GetController(),
+			this
+		);
 	}
+
+	// 충돌 디버그 (시각적으로 확인할 수 있도록).
+#if ENABLE_DRAW_DEBUG
+
+	// 캡슐의 중심 위치.
+	FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
+
+	// 캡슐 높이 절반 값.
+	float CapsuleHalfHeight = AttackRange * 0.5f;
+
+	// 표시할 색상 (안 맞았으면 빨강, 맞았으면 초록).
+	FColor DrawColor = HitDetected ? FColor::Green : FColor::Red;
+
+	// 캡슐 그리기.
+	DrawDebugCapsule(
+		GetWorld(),
+		CapsuleOrigin,
+		CapsuleHalfHeight,
+		AttackRadius,
+		FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
+		DrawColor,
+		false,
+		5.0f
+	);
+
+#endif
+
+}
+
+float AABCharacterBase::TakeDamage(
+	float DamageAmount, 
+	FDamageEvent const& DamageEvent, 
+	AController* EventInstigator, 
+	AActor* DamageCauser)
+{
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	// @Task: 맞으면 바로 죽도록 처리.
+
+	return DamageAmount;
 }
 
 void AABCharacterBase::ProcessComboCommand()

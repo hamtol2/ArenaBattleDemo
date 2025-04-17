@@ -29,6 +29,9 @@ public:
 	// 공격 감지 함수 (애님 노티파이로부터 호출됨).
 	virtual void AttackHitCheck() override;
 
+	// 대미지 처리 함수.
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
 	// Combo Section.
 protected:
 
