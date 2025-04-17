@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interface/ABAnimationAttackInterface.h"
 #include "ABCharacterBase.generated.h"
 
 UENUM()
@@ -14,7 +15,8 @@ enum class ECharacterControlType : uint8
 };
 
 UCLASS()
-class ARENABATTLEDEMO_API AABCharacterBase : public ACharacter
+class ARENABATTLEDEMO_API AABCharacterBase 
+	: public ACharacter, public IABAnimationAttackInterface
 {
 	GENERATED_BODY()
 
@@ -23,6 +25,9 @@ public:
 	AABCharacterBase();
 
 	virtual void SetCharacterControlData(const class UABCharacterControlData* InCharacterControlData);
+
+	// 공격 감지 함수 (애님 노티파이로부터 호출됨).
+	virtual void AttackHitCheck() override;
 
 	// Combo Section.
 protected:
