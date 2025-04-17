@@ -52,6 +52,15 @@ protected:
 	// 타이머 시간 사이에 입력이 들어왔는지 여부를 확인하는 함수.
 	void ComboCheck();
 
+	// Dead Section.
+protected:
+
+	// 죽음 상태 설정 함수.
+	virtual void SetDead();
+
+	// 죽는 애니메이션 재생 함수.
+	void PlayDeadAnimation();
+
 protected:
 	UPROPERTY(EditAnywhere, Category = CharacterControl, meta = (AllowPrivateAccess = "true"))
 	TMap<ECharacterControlType, class UABCharacterControlData*> CharacterControlManager;
@@ -73,4 +82,14 @@ protected:
 
 	// 콤보 타이머 이전에 입력이 들어왔는지를 확인하는 불리언 변수.
 	bool HasNextComboCommand = false;
+
+	// Dead Section.
+protected:
+
+	// 죽음 몽타주 애셋.
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UAnimMontage> DeadMontage;
+
+	// 죽은 뒤에 액터를 제거하기 전까지 대기할 시간 값.
+	float DeadEventDelayTime = 5.0f;
 };

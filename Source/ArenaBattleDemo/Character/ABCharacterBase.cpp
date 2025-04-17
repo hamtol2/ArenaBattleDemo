@@ -54,6 +54,13 @@ AABCharacterBase::AABCharacterBase()
 	{
 		ComboActionData = ComboActionDataRef.Object;
 	}
+
+	// 죽음 몽타주 애셋 설정.
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> DeadMontageRef(TEXT("/Game/ArenaBattle/Animation/AM_Dead.AM_Dead"));
+	if (DeadMontageRef.Object)
+	{
+		DeadMontage = DeadMontageRef.Object;
+	}
 }
 
 void AABCharacterBase::SetCharacterControlData(const UABCharacterControlData* InCharacterControlData)
@@ -74,8 +81,8 @@ void AABCharacterBase::AttackHitCheck()
 
 	// 충돌 시작 지점 계산.
 	// 캐릭터 몸통에서 약간 앞으로(캡슐의 반지름 만큼) 설정.
-	FVector Start 
-		= GetActorLocation() 
+	FVector Start
+		= GetActorLocation()
 		+ GetActorForwardVector() * GetCapsuleComponent()->GetScaledCapsuleRadius();
 
 	// 공격 거리.
@@ -87,7 +94,7 @@ void AABCharacterBase::AttackHitCheck()
 	// 두번째 인자: 복잡한 형태의 충돌체를 감지할 지 여부.
 	// 세번째 인자: 무시할 액터 목록.
 	FCollisionQueryParams Params(
-		SCENE_QUERY_STAT(Attack), 
+		SCENE_QUERY_STAT(Attack),
 		false,
 		this
 	);
@@ -154,14 +161,15 @@ void AABCharacterBase::AttackHitCheck()
 }
 
 float AABCharacterBase::TakeDamage(
-	float DamageAmount, 
-	FDamageEvent const& DamageEvent, 
-	AController* EventInstigator, 
+	float DamageAmount,
+	FDamageEvent const& DamageEvent,
+	AController* EventInstigator,
 	AActor* DamageCauser)
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	// @Task: 맞으면 바로 죽도록 처리.
+	// 맞으면 바로 죽도록 처리.
+	SetDead();
 
 	return DamageAmount;
 }
@@ -253,10 +261,10 @@ void AABCharacterBase::SetComboCheckTimer()
 		// 네번째: 타이머 시간.
 		// 다섯번째: 반복여부.
 		GetWorld()->GetTimerManager().SetTimer(
-			ComboTimerHandle, 
-			this, 
-			&AABCharacterBase::ComboCheck, 
-			ComboEffectiveTime, 
+			ComboTimerHandle,
+			this,
+			&AABCharacterBase::ComboCheck,
+			ComboEffectiveTime,
 			false
 		);
 	}
@@ -299,5 +307,32 @@ void AABCharacterBase::ComboCheck()
 			// 콤보 공격 입력 플래그 초기화.
 			HasNextComboCommand = false;
 		}
+	}
+}
+
+void AABCharacterBase::SetDead()
+{
+	// 무브먼트 컴포넌트 끄기.
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+
+	// 콜리전 끄기.
+	SetActorEnableCollision(false);
+
+	// 죽는 애니메이션 재생.
+	PlayDeadAnimation();
+}
+
+void AABCharacterBase::PlayDeadAnimation()
+{
+	// 몽타주 재생.
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance)
+	{
+		// 이미 재생 중인 몽타주가 있다면, 모두 종료.
+		AnimInstance->StopAllMontages(0.0f);
+
+		// 죽음 몽타주 재생.
+		const float PlayRate = 1.0f;
+		AnimInstance->Montage_Play(DeadMontage, PlayRate);
 	}
 }
