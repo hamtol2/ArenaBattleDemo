@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interface/ABAnimationAttackInterface.h"
+#include "Interface/ABCharacterWidgetInterface.h"
 #include "ABCharacterBase.generated.h"
 
 UENUM()
@@ -16,7 +17,9 @@ enum class ECharacterControlType : uint8
 
 UCLASS()
 class ARENABATTLEDEMO_API AABCharacterBase 
-	: public ACharacter, public IABAnimationAttackInterface
+	: public ACharacter, 
+	public IABAnimationAttackInterface,
+	public IABCharacterWidgetInterface
 {
 	GENERATED_BODY()
 
@@ -25,6 +28,8 @@ public:
 	AABCharacterBase();
 
 	virtual void SetCharacterControlData(const class UABCharacterControlData* InCharacterControlData);
+
+	virtual void SetupCharacterWidget(class UUserWidget* InUserWidget) override;
 
 	// 공격 감지 함수 (애님 노티파이로부터 호출됨).
 	virtual void AttackHitCheck() override;
@@ -35,6 +40,9 @@ public:
 		struct FDamageEvent const& DamageEvent, 
 		class AController* EventInstigator, 
 		AActor* DamageCauser) override;
+
+	// 컴포넌트가 초기화된 이후에 호출되는 함수.
+	virtual void PostInitializeComponents() override;
 
 	// Combo Section.
 protected:
@@ -103,5 +111,5 @@ protected:
 	TObjectPtr<class UABCharacterStatComponent> Stat;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Widget, meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<class UWidgetComponent> HpBar;
+	TObjectPtr<class UABWidgetComponent> HpBar;
 };

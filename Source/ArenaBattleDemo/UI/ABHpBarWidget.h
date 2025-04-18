@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "ABUserWidget.h"
 #include "ABHpBarWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ARENABATTLEDEMO_API UABHpBarWidget : public UUserWidget
+class ARENABATTLEDEMO_API UABHpBarWidget : public UABUserWidget
 {
 	GENERATED_BODY()
 	
