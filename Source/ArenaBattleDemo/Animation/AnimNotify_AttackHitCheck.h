@@ -16,5 +16,8 @@ class ARENABATTLEDEMO_API UAnimNotify_AttackHitCheck : public UAnimNotify
 	
 protected:
 	// 애니메이션 노티파이가 발생할 때 호출되는 이벤트 함수.
-	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
+	virtual void Notify(
+		USkeletalMeshComponent* MeshComp, 
+		UAnimSequenceBase* Animation, 
+		const FAnimNotifyEventReference& EventReference) override;
 };

@@ -30,7 +30,11 @@ public:
 	virtual void AttackHitCheck() override;
 
 	// 대미지 처리 함수.
-	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	virtual float TakeDamage(
+		float DamageAmount, 
+		struct FDamageEvent const& DamageEvent, 
+		class AController* EventInstigator, 
+		AActor* DamageCauser) override;
 
 	// Combo Section.
 protected:

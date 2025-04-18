@@ -16,37 +16,7 @@
 
 AABCharacterPlayer::AABCharacterPlayer()
 {
-	// 컨트롤러의 회전을 받아서 설정하는 모드를 모두 해제.
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
-	bUseControllerRotationRoll = false;
-
-	// 무브먼트 설정.
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
-	GetCharacterMovement()->JumpZVelocity = 700.0f;
-
-	// 컴포넌트 설정.
-	GetCapsuleComponent()->SetCapsuleHalfHeight(88.0f);
-
-	GetMesh()->SetRelativeLocationAndRotation(
-		FVector(0.0f, 0.0f, -88.0f),
-		FRotator(0.0f, -90.0f, 0.0f)
-	);
-
-	// 리소스 설정.
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMesh(TEXT("/Game/Characters/Mannequins/Meshes/SKM_Quinn.SKM_Quinn"));
-	if (CharacterMesh.Object)
-	{
-		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
-	}
-
-	// Animation Blueprint 설정.
-	static ConstructorHelpers::FClassFinder<UAnimInstance> CharacterAnim(TEXT("/Game/Characters/Mannequins/Animations/ABP_Quinn.ABP_Quinn_C"));
-	if (CharacterAnim.Class)
-	{
-		GetMesh()->SetAnimClass(CharacterAnim.Class);
-	}
+	
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
