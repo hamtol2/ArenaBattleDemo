@@ -15,6 +15,10 @@
 #include "UI/ABWidgetComponent.h"
 
 #include "UI/ABHpBarWidget.h"
+#include "Item/ABItemData.h"
+
+// 로그 카테고리 정의.
+DEFINE_LOG_CATEGORY(LogABCharacter);
 
 // Sets default values
 AABCharacterBase::AABCharacterBase()
@@ -430,4 +434,27 @@ void AABCharacterBase::PlayDeadAnimation()
 		const float PlayRate = 1.0f;
 		AnimInstance->Montage_Play(DeadMontage, PlayRate);
 	}
+}
+
+void AABCharacterBase::TakeItem(UABItemData* InItemData)
+{
+	//switch (InItemData->Type)
+	//{
+	//	case EItemType::Weapon:
+	//	{
+	//	}
+	//	break;
+	//}
+}
+
+void AABCharacterBase::DrinkPortion(UABItemData* InItemData)
+{
+}
+
+void AABCharacterBase::EquipWeapon(UABItemData* InItemData)
+{
+}
+
+void AABCharacterBase::ReadScroll(UABItemData* InItemData)
+{
 }
