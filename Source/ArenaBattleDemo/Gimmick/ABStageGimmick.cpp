@@ -4,6 +4,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
 #include "Physics/ABCollision.h"
+#include "Character/ABCharacterNonPlayer.h"
 
 // Sets default values
 AABStageGimmick::AABStageGimmick()
@@ -107,12 +108,6 @@ void AABStageGimmick::OnConstruction(const FTransform& Transform)
 
 void AABStageGimmick::SetState(EStageState InNewState)
 {
-	// 예외 처리.
-	//if (CurrentState == InNewState)
-	//{
-	//	return;
-	//}
-
 	// 현재 상태 업데이트.
 	CurrentState = InNewState;
 
@@ -125,6 +120,8 @@ void AABStageGimmick::SetState(EStageState InNewState)
 
 void AABStageGimmick::OnStageTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// 캐릭터가 스테이지에 입장하면 대전 상태로 전환.
+	SetState(EStageState::Fight);
 }
 
 void AABStageGimmick::SetReady()
@@ -138,8 +135,8 @@ void AABStageGimmick::SetReady()
 		GateTrigger->SetCollisionProfileName(TEXT("NoCollision"));
 	}
 
-	// 모든 문 닫기.
-	CloseAllGates();
+	// 준비 상태일 때는 문이 열려있도록 설정.
+	OpenAllGates();
 }
 
 void AABStageGimmick::SetFight()
@@ -189,6 +186,48 @@ void AABStageGimmick::SetChooseNext()
 
 void AABStageGimmick::OnGateTriggerBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	// 게이트에는 하나의 태그를 설정했기 때문에 이를 확인.
+	ensure(OverlappedComponent->ComponentTags.Num() == 1);
+
+	// 태그 확인 (예: +XGate)
+	FName ComponentTag = OverlappedComponent->ComponentTags[0];
+
+	// 태그에서 스테이지를 배치할 소켓의 이름을 가져오기.
+	FName SocketName = FName(*ComponentTag.ToString().Left(2));
+
+	// 소켓이 있는지 확인.
+	check(Stage->DoesSocketExist(SocketName));
+
+	// 소켓 이름을 통해 위치 값 가져오기.
+	FVector NewLocation = Stage->GetSocketLocation(SocketName);
+
+	// 가져온 위치에 이미 다른 스테이지가 없는지 확인.
+	TArray<FOverlapResult> OverlapResults;
+
+	FCollisionQueryParams CollisionQueryParams(
+		SCENE_QUERY_STAT(GateTrigger),
+		false,
+		this
+	);
+
+	// 오버랩으로 검사.
+	bool Result = GetWorld()->OverlapMultiByObjectType(
+		OverlapResults,		// 충돌 결과를 반환할 변수.
+		NewLocation,		// 충돌 판정할 위치.
+		FQuat::Identity,	// 회전.
+		// 충돌 대상 오브젝트 채널.
+		FCollisionObjectQueryParams::InitType::AllStaticObjects,
+		// 충돌 판정할 때 사용할 모형.
+		FCollisionShape::MakeSphere(775.0f),
+		// 콜리전 옵션(자기는 제외하기 위해).
+		CollisionQueryParams
+	);
+
+	// 생성하려는 위치에 다른 스테이지가 없다면 생성 진행.
+	if (!Result)
+	{
+		GetWorld()->SpawnActor<AABStageGimmick>(NewLocation, FRotator::ZeroRotator);
+	}
 }
 
 void AABStageGimmick::OpenAllGates()
@@ -206,5 +245,28 @@ void AABStageGimmick::CloseAllGates()
 	for (const auto& Gate : Gates)
 	{
 		Gate.Value->SetRelativeRotation(FRotator::ZeroRotator);
+	}
+}
+
+void AABStageGimmick::OpponentDestroyed(AActor* DestroyedActor)
+{
+	// NPC가 죽으면 보상 단계로 설정.
+	SetState(EStageState::Reward);
+}
+
+void AABStageGimmick::OpponentSpawn()
+{
+	// NPC를 생성할 위치 설정.
+	const FVector SpawnLocation = GetActorLocation() + FVector::UpVector * 88.0f;
+
+	// NPC 생성.
+	AActor* OpponentActor 
+		= GetWorld()->SpawnActor(OpponentClass, &SpawnLocation, &FRotator::ZeroRotator);
+
+	// NPC가 죽었을 때 발행되는 델리게이트에 등록.
+	AABCharacterNonPlayer* ABOpponentCharacter = Cast<AABCharacterNonPlayer>(OpponentActor);
+	if (ABOpponentCharacter)
+	{
+		ABOpponentCharacter->OnDestroyed.AddDynamic(this, &AABStageGimmick::OpponentDestroyed);
 	}
 }
