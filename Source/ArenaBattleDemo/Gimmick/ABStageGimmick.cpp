@@ -96,6 +96,12 @@ AABStageGimmick::AABStageGimmick()
 	StageChangedActions.Add(EStageState::Reward, FOnStageChangedDelegate::CreateUObject(this, &AABStageGimmick::SetChooseReward));
 
 	StageChangedActions.Add(EStageState::Next, FOnStageChangedDelegate::CreateUObject(this, &AABStageGimmick::SetChooseNext));
+
+	// Fight Section.
+	OpponentSpawnTime = 2.0f;
+
+	// 생성할 NPC 클래스 타입 지정.
+	OpponentClass = AABCharacterNonPlayer::StaticClass();
 }
 
 void AABStageGimmick::OnConstruction(const FTransform& Transform)
@@ -152,6 +158,15 @@ void AABStageGimmick::SetFight()
 
 	// 모든 문 닫기.
 	CloseAllGates();
+
+	// NPC 생성.
+	GetWorld()->GetTimerManager().SetTimer(
+		OpponentTimerHandle,				// 타이머 핸들.
+		this,								// 콜백 함수 소유 객체.
+		&AABStageGimmick::OpponentSpawn,	// 콜백 함수.
+		OpponentSpawnTime,					// 타이머 시간 값.
+		false								// 반복 여부.
+	);
 }
 
 void AABStageGimmick::SetChooseReward()
