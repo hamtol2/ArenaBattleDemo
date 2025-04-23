@@ -127,4 +127,33 @@ protected:
 
 	// 타이머가 종료되어 NPC가 생성될 때 호출할 함수.
 	void OpponentSpawn();
+
+	// Reward Section.
+protected:
+
+	// 보상 상자 생성을 위한 클래스.
+	UPROPERTY(VisibleAnywhere, Category = Reward, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<class AABItemBox> RewardItemClass;
+
+	// 보상 상자는 스테이지와 무관하기 때문에 강참조(TObjectPtr)보다는 약참조(TWeakObjectPtr)를 사용하는 것이 좋음.
+	UPROPERTY(VisibleAnywhere, Category = Reward, meta = (AllowPrivateAccess = "true"))
+	TArray<TWeakObjectPtr<class AABItemBox>> RewardBoxes;
+
+	// 보상 상자 생성 위치를 맵으로 관리.
+	TMap<FName, FVector> RewardBoxLocations;
+
+	// 생성된 상자와의 오버랩 이벤트를 처리할 때 사용할 함수.
+	UFUNCTION()
+	void OnRewardTriggerBeginOvelap(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult
+	);
+
+	// 보상 상자 생성 함수.
+	void SpawnRewardBoxes();
+
 };
