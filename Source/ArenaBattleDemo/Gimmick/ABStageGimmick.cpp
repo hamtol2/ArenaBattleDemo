@@ -90,9 +90,15 @@ AABStageGimmick::AABStageGimmick()
 	CurrentState = EStageState::Ready;
 
 	// 열거형 - 델리게이트 맵 설정.
-	StageChangedActions.Add(EStageState::Ready, FOnStageChangedDelegate::CreateUObject(this, &AABStageGimmick::SetReady));
+	StageChangedActions.Add(
+		EStageState::Ready, 
+		FOnStageChangedDelegate::CreateUObject(this, &AABStageGimmick::SetReady)
+	);
 
-	StageChangedActions.Add(EStageState::Fight, FOnStageChangedDelegate::CreateUObject(this, &AABStageGimmick::SetFight));
+	StageChangedActions.Add(
+		EStageState::Fight, 
+		FOnStageChangedDelegate::CreateUObject(this, &AABStageGimmick::SetFight)
+	);
 
 	StageChangedActions.Add(EStageState::Reward, FOnStageChangedDelegate::CreateUObject(this, &AABStageGimmick::SetChooseReward));
 
@@ -103,6 +109,21 @@ AABStageGimmick::AABStageGimmick()
 
 	// 생성할 NPC 클래스 타입 지정.
 	OpponentClass = AABCharacterNonPlayer::StaticClass();
+
+	// Reward Section.
+
+	// 생성할 아이템 상자의 클래스 타입 설정.
+	RewardItemClass = AABItemBox::StaticClass();
+
+	// 생성 위치 설정.
+	for (const FName& GateSocket : GateSockets)
+	{
+		// 소켓 위치를 사용해 위치 값 구하기.
+		FVector BoxLocation = Stage->GetSocketLocation(GateSocket) / 2;
+
+		// 맵에 추가.
+		RewardBoxLocations.Add(GateSocket, BoxLocation);
+	}
 }
 
 void AABStageGimmick::OnConstruction(const FTransform& Transform)
@@ -290,9 +311,35 @@ void AABStageGimmick::OpponentSpawn()
 	}
 }
 
-void AABStageGimmick::OnRewardTriggerBeginOvelap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AABStageGimmick::OnRewardTriggerBeginOvelap(
+	UPrimitiveComponent* OverlappedComponent, 
+	AActor* OtherActor, 
+	UPrimitiveComponent* OtherComp, 
+	int32 OtherBodyIndex, 
+	bool bFromSweep, 
+	const FHitResult& SweepResult)
 {
+	// 캐릭터가 보상 상자를 획득하면, 상자 배열을 순회하면서 처리 진행.
+	for (const auto& RewardBox : RewardBoxes)
+	{
+		// RewardBoxes의 항목은 약참조를 하기 때문에 해당 포인터가 유효한지 보장할 수 없음.
+		// 보상 상자가 유효하면 처리 진행.
+		if (RewardBox.IsValid())
+		{
+			// 보상 상자의 포인터 가져오기.
+			AABItemBox* ValidBox = RewardBox.Get();
+			AActor* OverlappedBox = OverlappedComponent->GetOwner();
 
+			// 두 박스가 서로 다른 경우에는 제거.
+			if (OverlappedBox != ValidBox)
+			{
+				ValidBox->Destroy();
+			}
+		}
+	}
+
+	// 다음 단계로 전환.
+	SetState(EStageState::Next);
 }
 
 void AABStageGimmick::SpawnRewardBoxes()
@@ -307,6 +354,7 @@ void AABStageGimmick::SpawnRewardBoxes()
 			+ FVector(0.0f, 0.0f, 30.0f);
 
 		// 박스 액터 생성.
+		// UObject / Actor.
 		AActor* ItemActor = GetWorld()->SpawnActor(
 			RewardItemClass, 
 			&SpawnLocation, 
@@ -318,6 +366,7 @@ void AABStageGimmick::SpawnRewardBoxes()
 		if (RewardBoxActor)
 		{
 			// 생성된 아이템 액터에 태그 추가.
+			// 나중에 구분을 하기 위해 추가.
 			RewardBoxActor->Tags.Add(RewardBoxLocation.Key);
 
 			// 오버랩 이벤트에 등록.
