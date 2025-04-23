@@ -7,6 +7,8 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Physics/ABCollision.h"
 #include "Interface/ABCharacterItemInterface.h"
+#include "Engine/AssetManager.h"
+#include "ABItemData.h"
 
 // Sets default values
 AABItemBox::AABItemBox()
@@ -54,6 +56,41 @@ AABItemBox::AABItemBox()
 
 	//Trigger->OnComponentBeginOverlap
 	//Effect->OnSystemFinished
+}
+
+void AABItemBox::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	// PrimaryAssetId 목록을 가져오기 위해 애셋 매니저 싱글톤 참조.
+	UAssetManager& Manager = UAssetManager::Get();
+
+	// 애셋 목록 가져오기.
+	TArray<FPrimaryAssetId> Assets;
+	Manager.GetPrimaryAssetIdList(TEXT("ABItemData"), Assets);
+
+	// 제대로 가져왔는지 검사.
+	ensure(Assets.Num() > 0);
+
+	//UE_LOG(LogTemp, Log, TEXT("Assets.Num(): %d"), Assets.Num());
+
+	// 랜덤으로 인덱스 선택.
+	int32 RandomIndex = FMath::RandRange(0, Assets.Num() - 1);
+
+	// 선택된 인덱스를 사용해 애셋 참조.
+	FSoftObjectPtr AssetPtr(Manager.GetPrimaryAssetPath(Assets[RandomIndex]));
+
+	// 애셋이 로드가 안된 경우, 로드.
+	if (AssetPtr.IsPending())
+	{
+		AssetPtr.LoadSynchronous();
+	}
+
+	// 로드한 애셋을 아이템으로 설정.
+	Item = Cast<UABItemData>(AssetPtr.Get());
+
+	// 제대로 설정됐는지 확인.
+	ensure(Item);
 }
 
 void AABItemBox::OnOverlapBegin(
