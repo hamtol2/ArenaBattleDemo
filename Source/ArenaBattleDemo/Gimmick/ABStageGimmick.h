@@ -17,7 +17,8 @@ struct FOnStageChangedDelegateWrapper
 
 	FOnStageChangedDelegateWrapper() {}
 	FOnStageChangedDelegateWrapper(FOnStageChangedDelegate InDelegate)
-	: StageChangedDelegate(InDelegate) {}
+		: StageChangedDelegate(InDelegate) {
+	}
 
 	FOnStageChangedDelegate StageChangedDelegate;
 };
@@ -44,6 +45,16 @@ public:
 	// 이 함수는 트랜스폼 뿐만 아니라, 다른 속성이 변경되는 경우에도 호출됨.
 	virtual void OnConstruction(const FTransform& Transform) override;
 
+	// Stat Section.
+public:
+
+	// CurrentStageNum에 대한 Getter/Setter.
+	FORCEINLINE int32 GetStageNum() const { return CurrentStageNum; }
+	FORCEINLINE void SetStageNum(int32 InNewStageNum)
+	{
+		CurrentStageNum = InNewStageNum;
+	}
+
 	// Stage Section.
 protected:
 	// 스테이지를 보여줄 때 사용할 메시 컴포넌트.
@@ -63,11 +74,11 @@ protected:
 	// 스테이지 트리거의 오버랩 이벤트 확인을 위한 함수.
 	UFUNCTION()
 	void OnStageTriggerBeginOverlap(
-		UPrimitiveComponent* OverlappedComponent, 
-		AActor* OtherActor, 
-		UPrimitiveComponent* OtherComp, 
-		int32 OtherBodyIndex, 
-		bool bFromSweep, 
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
 		const FHitResult& SweepResult
 	);
 
@@ -156,4 +167,10 @@ protected:
 	// 보상 상자 생성 함수.
 	void SpawnRewardBoxes();
 
+	// Stage Stat.
+protected:
+
+	// 스테이지의 넘버를 스탯으로 관리.
+	UPROPERTY(VisibleInstanceOnly, Category = Stat, meta = (AllowPrivateAccess = "true"))
+	int32 CurrentStageNum;
 };

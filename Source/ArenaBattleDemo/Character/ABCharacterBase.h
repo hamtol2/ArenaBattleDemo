@@ -30,15 +30,16 @@ struct FTakeItemDelegateWrapper
 	GENERATED_BODY()
 
 	FTakeItemDelegateWrapper() {}
-	FTakeItemDelegateWrapper(const FOnTakeItemDelegate& InItemDelegate) 
-		: ItemDelegate(InItemDelegate) {} 
+	FTakeItemDelegateWrapper(const FOnTakeItemDelegate& InItemDelegate)
+		: ItemDelegate(InItemDelegate) {
+	}
 
 	FOnTakeItemDelegate ItemDelegate;
 };
 
 UCLASS()
-class ARENABATTLEDEMO_API AABCharacterBase 
-	: public ACharacter, 
+class ARENABATTLEDEMO_API AABCharacterBase
+	: public ACharacter,
 	public IABAnimationAttackInterface,
 	public IABCharacterWidgetInterface,
 	public IABCharacterItemInterface
@@ -58,9 +59,9 @@ public:
 
 	// 대미지 처리 함수.
 	virtual float TakeDamage(
-		float DamageAmount, 
-		struct FDamageEvent const& DamageEvent, 
-		class AController* EventInstigator, 
+		float DamageAmount,
+		struct FDamageEvent const& DamageEvent,
+		class AController* EventInstigator,
 		AActor* DamageCauser) override;
 
 	// 컴포넌트가 초기화된 이후에 호출되는 함수.
@@ -75,7 +76,7 @@ protected:
 
 	// 콤보 액션이 시작될 때 호출할 함수.
 	void ComboActionBegin();
-	
+
 	// 콤보가 종료될 때 호출될 함수.
 	// 애님 몽타주에서 제공하는 델리게이트와 파라미터 맞춤.
 	void ComboActionEnd(class UAnimMontage* TargetMontage, bool IsProperlyEnded);
@@ -153,4 +154,11 @@ protected:
 	// 무기 아이템을 획득했을 때 사용할 스켈레탈 메시 컴포넌트.
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Equipment, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USkeletalMeshComponent> Weapon;
+
+	// Stat Section.
+public:
+
+	// 레벨 Getter/Setter.
+	int32 GetLevel() const;
+	void SetLevel(int32 InNewLevel);
 };
