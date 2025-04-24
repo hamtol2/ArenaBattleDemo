@@ -18,10 +18,10 @@ public:
 	// FPrimaryAssetId 값을 방환하는 GetPrimaryAssetId 함수 오버라이드.
 	// 첫번째 인자: 태그 값.
 	// 두번째 인자: 이름 값. 일반적으로 GetFName()을 많이 활용함.
-	virtual FPrimaryAssetId GetPrimaryAssetId() const override
-	{
-		return FPrimaryAssetId("ABItemData", GetFName());
-	}
+	//virtual FPrimaryAssetId GetPrimaryAssetId() const override
+	//{
+	//	return FPrimaryAssetId("ABItemData", GetFName());
+	//}
 
 public:
 
