@@ -202,7 +202,8 @@ void AABCharacterBase::AttackHitCheck()
 	);
 
 	// 트레이스에 사용할 구체의 반지름.
-	const float AttackRadius = 50.0f;
+	//const float AttackRadius = 50.0f;
+	const float AttackRadius = Stat->GetAttackRadius();
 
 	// 트레이스를 활용해 충돌 검사.
 	FHitResult OutHitResult;
