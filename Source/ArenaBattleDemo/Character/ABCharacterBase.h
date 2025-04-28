@@ -81,6 +81,9 @@ protected:
 	// 애님 몽타주에서 제공하는 델리게이트와 파라미터 맞춤.
 	void ComboActionEnd(class UAnimMontage* TargetMontage, bool IsProperlyEnded);
 
+	// NPC가 공격이 끝나는 지점을 알 수 있도록 함수 추가.
+	virtual void NotifyComboActionEnd();
+
 	// 콤보 타이머 설정 함수.
 	void SetComboCheckTimer();
 

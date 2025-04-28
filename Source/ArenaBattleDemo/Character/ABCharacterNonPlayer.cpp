@@ -107,3 +107,22 @@ float AABCharacterNonPlayer::GetAITurnSpeed()
 {
 	return 0.0f;
 }
+
+void AABCharacterNonPlayer::SetAIAttackDelegeate(const FAICharacterAttackFinished& InOnAttackFinished)
+{
+	OnAttackFinished = InOnAttackFinished;
+}
+
+void AABCharacterNonPlayer::AttackByAI()
+{
+	// 공격 진행을 위한 콤보 실행 함수 호출.
+	ProcessComboCommand();
+}
+
+void AABCharacterNonPlayer::NotifyComboActionEnd()
+{
+	Super::NotifyComboActionEnd();
+
+	// 전달 받은 델리게이트 실행.
+	OnAttackFinished.ExecuteIfBound();
+}
