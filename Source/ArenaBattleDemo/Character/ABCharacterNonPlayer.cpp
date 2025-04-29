@@ -108,7 +108,8 @@ float AABCharacterNonPlayer::GetAITurnSpeed()
 	return 2.0f;
 }
 
-void AABCharacterNonPlayer::SetAIAttackDelegeate(const FAICharacterAttackFinished& InOnAttackFinished)
+void AABCharacterNonPlayer::SetAIAttackDelegeate(
+	const FAICharacterAttackFinished& InOnAttackFinished)
 {
 	OnAttackFinished = InOnAttackFinished;
 }

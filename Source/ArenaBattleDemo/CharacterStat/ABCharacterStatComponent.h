@@ -26,7 +26,10 @@ public:
 
 protected:
 	// Called when the game starts
-	virtual void BeginPlay() override;
+	//virtual void BeginPlay() override;
+
+	// 컴포넌트가 초기화되는 함수.
+	virtual void InitializeComponent() override;
 	
 public:
 	// Getter.
