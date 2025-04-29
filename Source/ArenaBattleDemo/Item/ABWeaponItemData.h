@@ -24,6 +24,8 @@ public:
 	//	return FPrimaryAssetId("ABItemData", GetFName());
 	//}
 
+	UABWeaponItemData();
+
 public:
 
 	// 제공할 무기에 대한 스켈레탈 메시.

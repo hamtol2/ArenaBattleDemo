@@ -39,6 +39,16 @@ public:
 	// __forceinline.
 	//FORCEINLINE float GetMaxHp() { return MaxHp; }
 	FORCEINLINE float GetCurrentHp() const { return CurrentHp; }
+	FORCEINLINE void HealHp(float InHealAmount)
+	{
+		CurrentHp = FMath::Clamp(
+			CurrentHp + InHealAmount,
+			0,
+			GetTotalStat().MaxHp
+		);
+
+		OnHpChanged.Broadcast(CurrentHp);
+	}
 
 	FORCEINLINE float GetAttackRadius() const { return AttackRadius; }
 
@@ -63,6 +73,13 @@ public:
 	FORCEINLINE void SetBaseStat(const FABCharacterStat& InBaseStat)
 	{
 		BaseStat = InBaseStat;
+		OnStatChanged.Broadcast(BaseStat, ModifierStat);
+	}
+
+	FORCEINLINE void AddBaseStat(const FABCharacterStat& InAddBaseStat)
+	{
+		//SetBaseStat(BaseStat + InAddBaseStat);
+		BaseStat = BaseStat + InAddBaseStat;
 		OnStatChanged.Broadcast(BaseStat, ModifierStat);
 	}
 

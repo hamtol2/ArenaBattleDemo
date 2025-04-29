@@ -23,6 +23,9 @@ public:
 
 	virtual void BeginPlay() override;
 
+	// 플레이어가 죽었을 때 처리를 위한 함수.
+	virtual void SetDead() override;
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
