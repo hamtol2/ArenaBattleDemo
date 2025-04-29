@@ -36,7 +36,8 @@ void UABCharacterStatComponent::SetLevelStat(int32 InNewLevel)
 	CurrentLevel = FMath::Clamp(InNewLevel, 1, UABGameSingleton::Get().CharacterMaxLevel);
 
 	// 게임 싱글톤으로부터 레벨 데이터 가져오기.
-	BaseStat = UABGameSingleton::Get().GetCharacterStat(CurrentLevel);
+	//BaseStat = UABGameSingleton::Get().GetCharacterStat(CurrentLevel);
+	SetBaseStat(UABGameSingleton::Get().GetCharacterStat(CurrentLevel));
 
 	// 설정한 값에 문제 없는지 확인.
 	check(BaseStat.MaxHp > 0.0f);

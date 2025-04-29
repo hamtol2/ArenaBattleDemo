@@ -5,13 +5,16 @@
 #include "CoreMinimal.h"
 #include "Character/ABCharacterBase.h"
 #include "InputActionValue.h"
+#include "Interface/ABCharacterHUDInterface.h"
 #include "ABCharacterPlayer.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ARENABATTLEDEMO_API AABCharacterPlayer : public AABCharacterBase
+class ARENABATTLEDEMO_API AABCharacterPlayer 
+	: public AABCharacterBase,
+	public IABCharacterHUDInterface
 {
 	GENERATED_BODY()
 
@@ -64,4 +67,10 @@ protected:
 
 	// ���� ��� ���� ĳ���� ���.
 	ECharacterControlType CurrentCharacterControlType;
+
+	// UI Section.
+protected:
+
+	// IABCharacterHUDInterface 함수 구현.
+	virtual void SetupHUDWidget(class UABHUDWidget* InHUDWidget) override;
 };
