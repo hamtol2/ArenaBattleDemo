@@ -165,13 +165,15 @@ void AABCharacterBase::SetupCharacterWidget(UUserWidget* InUserWidget)
 	{
 		// 최대 체력 값 설정.
 		//HpBarWidget->SetMaxHp(Stat->GetMaxHp());
-		HpBarWidget->SetMaxHp(Stat->GetTotalStat().MaxHp);
+		//HpBarWidget->SetMaxHp(Stat->GetTotalStat().MaxHp);
+		HpBarWidget->UpdateStat(Stat->GetBaseStat(), Stat->GetModifierStat());
 
 		// HP 퍼센트가 제대로 계산 되도록 현재 체력 설정.
 		HpBarWidget->UpdateHpBar(Stat->GetCurrentHp());
 
 		// 체력 변경 이벤트(델리게이트)에 함수 및 객체 정보 등록.
 		Stat->OnHpChanged.AddUObject(HpBarWidget, &UABHpBarWidget::UpdateHpBar);
+		Stat->OnStatChanged.AddUObject(HpBarWidget, &UABHpBarWidget::UpdateStat);
 	}
 }
 
