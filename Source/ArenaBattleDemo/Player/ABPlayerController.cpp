@@ -37,13 +37,13 @@ void AABPlayerController::BeginPlay()
 	FInputModeGameOnly GameInput;
 	SetInputMode(GameInput);
 
-	// 위젯 생성.
-	ABHUDWidget = CreateWidget<UABHUDWidget>(this, ABHUDWidgetClass);
+	//// 위젯 생성.
+	//ABHUDWidget = CreateWidget<UABHUDWidget>(this, ABHUDWidgetClass);
 
-	// 위젯이 문제 없이 생성 됐으면,
-	if (ABHUDWidget)
-	{
-		// 위젯을 화면에 추가해 UI가 보일 수 있도록 설정.
-		ABHUDWidget->AddToViewport();
-	}
+	//// 위젯이 문제 없이 생성 됐으면,
+	//if (ABHUDWidget)
+	//{
+	//	// 위젯을 화면에 추가해 UI가 보일 수 있도록 설정.
+	//	ABHUDWidget->AddToViewport();
+	//}
 }

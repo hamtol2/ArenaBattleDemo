@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -17,9 +17,9 @@ class ARENABATTLEDEMO_API AABPlayerController : public APlayerController
 public:
 	AABPlayerController();
 
-	// ºí·çÇÁ¸°Æ®¿¡ ÀÌº¥Æ®¸¦ ¹ß»ı½ÃÄÑÁÖ´Â ÇÔ¼ö.
-	// K2 Á¢µÎ¾î´Â Kismet Á¢µÎ¾î¸¦ ÀÇ¹Ì.
-	// KismetÀº ºí·çÇÁ¸°Æ®ÀÇ Àü½Å.
+	// ë¸”ë£¨í”„ë¦°íŠ¸ì— ì´ë²¤íŠ¸ë¥¼ ë°œìƒì‹œì¼œì£¼ëŠ” í•¨ìˆ˜.
+	// K2 ì ‘ë‘ì–´ëŠ” Kismet ì ‘ë‘ì–´ë¥¼ ì˜ë¯¸.
+	// Kismetì€ ë¸”ë£¨í”„ë¦°íŠ¸ì˜ ì „ì‹ .
 	UFUNCTION(BlueprintImplementableEvent, Category = Game, meta = (DisplayName = "OnScoreChangedCpp"))
 	void K2_OnScoreChanged(int32 NewScore);
 
@@ -30,7 +30,7 @@ public:
 	void K2_OnGameOver();
 
 
-	// °ÔÀÓ Ã³¸®¿Í °ü·ÃÇØ °ÔÀÓ ¸ğµå¿¡¼­ È£ÃâÇÒ ÇÔ¼ö.
+	// ê²Œì„ ì²˜ë¦¬ì™€ ê´€ë ¨í•´ ê²Œì„ ëª¨ë“œì—ì„œ í˜¸ì¶œí•  í•¨ìˆ˜.
 	void GameScoreChanged(int32 NewScore);
 	void GameClear();
 	void GameOver();
@@ -41,11 +41,11 @@ protected:
 	// HUD Section.
 protected:
 
-	// »ı¼ºÇÒ À§Á¬ÀÇ Å¬·¡½º Á¤º¸.
+	// ìƒì„±í•  ìœ„ì ¯ì˜ í´ë˜ìŠ¤ ì •ë³´.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUD)
 	TSubclassOf<class UABHUDWidget> ABHUDWidgetClass;
 
-	// »ı¼ºÇÑ À§Á¬À» °´Ã¼ Á¤º¸¸¦ ÀúÀåÇÒ º¯¼ö.
+	// ìƒì„±í•œ ìœ„ì ¯ì„ ê°ì²´ ì •ë³´ë¥¼ ì €ì¥í•  ë³€ìˆ˜.
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = HUD)
 	TObjectPtr<class UABHUDWidget> ABHUDWidget;
 };
