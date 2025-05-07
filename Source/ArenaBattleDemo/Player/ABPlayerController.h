@@ -17,6 +17,12 @@ class ARENABATTLEDEMO_API AABPlayerController : public APlayerController
 public:
 	AABPlayerController();
 
+	// 게임 처리와 관련해 게임 모드에서 호출할 함수.
+	void GameScoreChanged(int32 NewScore);
+	void GameClear();
+	void GameOver();
+
+protected:
 	virtual void BeginPlay() override;
 
 	// HUD Section.

@@ -14,6 +14,18 @@ AABPlayerController::AABPlayerController()
 	}
 }
 
+void AABPlayerController::GameScoreChanged(int32 NewScore)
+{
+}
+
+void AABPlayerController::GameClear()
+{
+}
+
+void AABPlayerController::GameOver()
+{
+}
+
 void AABPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
